@@ -1,4 +1,6 @@
-# bash-cookbook
+# bash-cookbook 
+![](https://i.imgur.com/1cl8FAf.png)
+
 Collection of some useful Bash scripts
 
 ## Table of contents:
