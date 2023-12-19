@@ -8,3 +8,4 @@ Collection of some useful Bash scripts
 2. [Parse $PATH variable and output in readable format](../../tree/parse-path)
 3. [Get parameters of secure TLS connection to the given domain](../../tree/tls-info)
 4. [Bash script that splits a file into multiple parts based on a specified size in MB](../../tree/split-file)
+5. [Cleanup all Docker containers and images on your system](../../tree/docker-cleanup)
