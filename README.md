@@ -9,4 +9,4 @@ Collection of some useful Bash scripts
 3. [Get parameters of secure TLS connection for the given domain](../../tree/tls-info)
 4. [Bash script that splits a file into multiple parts based on a specified size in MB](../../tree/split-file)
 5. [Cleanup all Docker containers and images on your system](../../tree/docker-cleanup)
-6. [Script to set the Git credentials for repository](../../tree/git-account-switcher)
+6. [Set Git config settings for the repository](../../tree/git-account-switcher)
