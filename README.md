@@ -11,3 +11,4 @@ Collection of some useful Bash scripts
 5. [Cleanup all Docker containers and images on your system](../../tree/docker-cleanup)
 6. [Set Git config settings for the repository](../../tree/git-account-switcher)
 7. [Completely remove the given package from the system](../../tree/remove-package)
+8. [Convert decimal number to binary and vice versa](../../tree/bdconvert)
