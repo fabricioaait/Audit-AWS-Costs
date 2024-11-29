@@ -14,3 +14,4 @@ Collection of some useful Bash scripts
 8. [Convert decimal number to binary and vice versa](../../tree/bdconvert)
 9. [Calculate network, broadcast addresses, subnet mask and number of availalbe hosts from IP CIDR range](../../tree/cidrcalc)
 10. [Cleanup all pods in K8s cluster with 'Failed' or 'Unknown' statuses](../../tree/k8s-cleanup-pods)
+11. [Use cgroups to limit CPU usage to 50% for a given process](./linux-namespaces-cgroups/)
