@@ -4,7 +4,7 @@
 #   \___/ |_||_|\__|\__,_|\__, |\__, |\___|\__,_| |_|_\\___|/__/\___/ \_,_||_|  \__|\___|/__/
 #                        |___/ |___/                                                        
 # 
-# This script checks and lists all tags for the following resources: EC2, EBS, S3, Lambda, RDS
+# To learn more, see https://maxat-akbanov.com/                                
 ###############################################################################################
 
 #!/bin/bash

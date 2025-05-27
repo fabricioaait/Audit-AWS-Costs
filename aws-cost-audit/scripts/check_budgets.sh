@@ -6,6 +6,7 @@
 #                                       |___/           
 # This script queries AWS for a list of budget names
 # For each budget, checks if notifications are set up and logs appropriate messages.
+# To learn more, see https://maxat-akbanov.com/
 ######################################################################################################################
 
 #!/bin/bash
