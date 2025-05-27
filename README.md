@@ -1,104 +1,71 @@
-# AWS Cost Audit
+# AWS Cost Audit Scripts
 
-The following scripts allows to audit and review the following aspects of AWS Costs:
-- **Untagged resources**: No tags = no visibility
--  **Idle EC2s & oversized instances**: Avoid wasted budget, downsize or right-size using [AWS Compute Optimizer](https://aws.amazon.com/compute-optimizer/)
-- **No budgets or alerts**: Avoid surprises during high traffic spikes. Check budgets and alerts
-- **S3 buckets with no lifecycle policies**: Without auto-delete rules, logs can pile up for years in your S3 buckets. To avoid set expiration policies 
-- **Piling RDS Snapshots**: Old snapshots = hidden costs. Keep only what you need for compliance or recovery
-- **Forgotten EBS volumes**: Unattached EBS volumes are still billed - unless they’re deleted or snapshotted and archived
-- **Data Transfer Charges**: Cross-AZ traffic or public IP usage can sneak up. Use VPC endpoints and same-AZ designs where possible.
-- **Savings Plans / Reserved Instances**: Using On-Demand Instances for stable workloads can result in overpaying. Review your workloads to migrate to savings plans.
-- **Load balancers without traffic**: Check CloudWatch - if no traffic, shut them down.
+A collection of Bash scripts to help audit AWS accounts for common sources of unnecessary costs and best practices.
 
-## Run AWS Audit
+## Directory Structure
 
-To run the audit script:
-```bash
-./main.sh
+```
+aws-cost-audit/
+  scripts/
+    check_budgets.sh
+    check_data_transfer_risks.sh
+    check_forgotten_ebs.sh
+    check_idle_ec2.sh
+    check_idle_load_balancers.sh
+    check_old_rds_snapshots.sh
+    check_on_demand_instances.sh
+    check_s3_lifecycle.sh
+    check_untagged_resources.sh
+    main.sh
+    utils.sh
+README.md
 ```
 
-You should get the output `audit_log` file and the check progress in the terminal:
+## What Each Script Does
 
-![](../img/aws_audit_output.png)
+- **check_untagged_resources.sh**: Finds AWS resources without tags for better cost allocation.
+- **check_idle_ec2.sh**: Flags underutilized or idle EC2 instances.
+- **check_budgets.sh**: Checks for the presence of AWS Budgets and alerts.
+- **check_s3_lifecycle.sh**: Finds S3 buckets lacking lifecycle policies.
+- **check_old_rds_snapshots.sh**: Detects RDS snapshots older than 30 days.
+- **check_forgotten_ebs.sh**: Lists unattached EBS volumes.
+- **check_data_transfer_risks.sh**: Audits for public IPs, unused Elastic IPs, subnet/AZ design, and VPC endpoints.
+- **check_on_demand_instances.sh**: Counts on-demand EC2 instances to encourage cost savings.
+- **check_idle_load_balancers.sh**: Flags load balancers with no recent traffic.
+- **utils.sh**: Helper functions used by the other scripts.
+- **main.sh**: Orchestrates the execution of all checks and logs the results.
 
-> ⚠️ **Important:**  
-> The scripts check only for one given account in one specific region. You should have to run it against other accounts and regions in separate
+## Usage
 
-## Scripts
+1. **Configure AWS CLI**  
+   Ensure your AWS CLI is configured and you have the necessary IAM permissions for each check.
 
-The `main.sh` script is the launcing script. `utils.sh` script defines AWS account ID and log message formats.
+2. **Run the Audit**  
+   From the `scripts/` directory, run:
 
-```bash
-.
-├── check_budgets.sh
-├── check_data_transfer_risks.sh
-├── check_forgotten_ebs.sh
-├── check_idle_ec2.sh
-├── check_idle_load_balancers.sh
-├── check_old_rds_snapshots.sh
-├── check_on_demand_instances.sh
-├── check_s3_lifecycle.sh
-├── check_untagged_resources.sh
-├── main.sh
-└── utils.sh
-```
+   ```bash
+   ./main.sh
+   ```
 
-## AWS Budgets
+3. **View Results**  
+   The results will be displayed in the terminal and saved to a log file named:
 
-The `check_budgets` script queries AWS for a list of budget names. For each budget, checks if notifications are set up and logs appropriate messages. For more information, see [AWS Budgets](https://aws.amazon.com/aws-cost-management/aws-budgets/)
+   ```
+   audit_aws_YYYYMMDD_HHMMSS.log
+   ```
 
-## IDLE EC2 and Oversized Instances
+   (with the current date and time in the filename)
 
-The `check_idle_ec2.sh` script:
-1. Queries all running EC2 instances.
-2. For each instance, retrieves its type and calculates the average CPU utilization.
-3. Flags instances as "idle" if their CPU usage is below 10%, or "active" otherwise.
-4. Logs results using custom logging functions and suggests using AWS Compute Optimizer for further optimization.
+## Notes
 
-## Check S3 Buckets Without Lifecycle Policies
+- These scripts operate on a single AWS account and region at a time.
+- Make sure you have the required permissions for all AWS services being checked.
+- Review and customize the scripts as needed for your environment.
 
-In order to make this script function properly, first ensure that you have the following IAM permissions in your AWS account:
-- `s3:ListAllMyBuckets`
-- `s3:GetBucketLifecycleConfiguration`
+## Example Output
 
-The `check_s3_lifecycle.sh` script:
-- Lists all S3 buckets in the account.
-- For each bucket, checks if a lifecycle policy exists and logs the result.
-- If a policy exists, displays details (ID, Prefix, Status) of each rule using `jq`.
+You should get the output `audit_aws_YYYYMMDD_HHMMSS.log` file and see the check progress in the terminal.
 
-## Check Old RDS Snapshots
+---
 
-In order to make this script function properly, first ensure that you have the following IAM permissions in your AWS account:
-- `rds:DescribeDBSnapshots`
-
-The `check_old_rds_snapshots.sh` script checks for Amazon RDS automated and manual database snapshots older than 30 days:
-- Defines a 30-day threshold for identifying old snapshots.
-- Queries RDS snapshots older than the threshold, extracting their identifier, associated instance, creation time, and type.
-
-## Check for Forgotten EBS Volumes
-
-The `check_forgotten_ebs.sh` script checks for unattached (available) Amazon EBS volumes in a specified AWS region:
-- Queries EBS volumes with a status of "available" (not attached to any EC2 instance), extracting their ID, size, creation time, and tags.
-
-## Audit Data Transfer Risks
-
-The `check_data_transfer_risks.sh` script checks for the following:
-- EC2 instances with public IP addresses
-- Unused Elastic IPs
-- Subnets in different AZs
-- S3 VPC endpoint
-- DynamoDB VPC endpoint
-
-To add additional services for VPC endpoints like RDS, modify the script. For more information, see [Access an AWS service using an interface VPC endpoint](https://docs.aws.amazon.com/vpc/latest/privatelink/create-interface-endpoint.html)
-
-## On-Demand EC2 Instances
-
-The `check_on_demand_instances.sh` script outputs the number of on-demand EC2 instances in the account. To save more, review your workloads and consider using Reserved Instances or Savings Plans. For more information, see [EC2 pricing](https://aws.amazon.com/ec2/pricing/) 
-
-## Load Balancers Without Traffic
-
-The `check_idle_load_balancers.sh` script detects load balancers without traffic:
-- Lists all Application Load Balancers (ALB) and Network Load Balancers (NLB)
-- Checks CloudWatch metrics (RequestCount for ALB, ActiveFlowCount or ProcessedBytes for NLB)
-- Flags any with `0` average traffic over a recent period (e.g. past 3 days)
+**Contributions and suggestions are welcome!**
