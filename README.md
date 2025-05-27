@@ -15,3 +15,4 @@ Collection of some useful Bash scripts
 - [Calculate network, broadcast addresses, subnet mask and number of availalbe hosts from IP CIDR range](../../tree/cidrcalc)
 - [Cleanup all pods in K8s cluster with 'Failed' or 'Unknown' statuses](../../tree/k8s-cleanup-pods)
 - [Use cgroups to limit CPU usage to 50% for a given process](./linux-namespaces-cgroups/)
+- [Audit AWS costs](./aws-cost-audit/)
