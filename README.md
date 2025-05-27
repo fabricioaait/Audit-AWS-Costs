@@ -1,6 +1,6 @@
 # AWS Cost Audit Scripts
 
-A collection of Bash scripts to help audit AWS accounts for common sources of unnecessary costs and best practices.
+A collection of Bash scripts to help audit AWS accounts for common sources of unnecessary costs and best practices. Run in a read-only policy context.  
 
 ## Directory Structure
 
